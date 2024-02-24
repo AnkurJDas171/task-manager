@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 
 import Screens from './src/screens';
+import colors from './src/assets/constants/colors';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -15,7 +16,7 @@ function App(): React.JSX.Element {
     <SafeAreaView style={styles.body}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={"#fff"}
+        backgroundColor={colors.PRIMARY}
       />
       <Screens />
     </SafeAreaView>
@@ -25,7 +26,7 @@ function App(): React.JSX.Element {
 const styles = StyleSheet.create({
   body: {
     flex: 1,
-    backgroundColor: "#fff"
+    backgroundColor: colors.PRIMARY
   }
 })
 

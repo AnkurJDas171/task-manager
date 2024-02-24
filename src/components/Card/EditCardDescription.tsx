@@ -3,6 +3,7 @@ import { StyleSheet, TextInput } from "react-native";
 
 import { EditCardDescriptionProps, Timeout } from "../types";
 import useStore from "../../store";
+import colors from "../../assets/constants/colors";
 
 const EditCardDescription = React.memo((): JSX.Element => {
     const { taskDescription, setTaskDescription } = useStore();
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
     description: {
         height: 100,
         width: '100%',
-        backgroundColor: '#F3F3F3',
+        backgroundColor: colors.INPUT,
         borderRadius: 10,
         paddingVertical: 15,
         paddingHorizontal: 10 

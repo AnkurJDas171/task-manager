@@ -9,6 +9,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { localStorage } from "../localStorage";
 import storeageKey from "../assets/constants/localStorageKeys";
 import useStore from "../store";
+import colors from "../assets/constants/colors";
 
 const HomeScreen = ({ navigation }: HomeScreenProps): JSX.Element => {
     const { setListData } = useStore();
@@ -43,7 +44,7 @@ const HomeScreen = ({ navigation }: HomeScreenProps): JSX.Element => {
 const styles = StyleSheet.create({
     body: {
         flex: 1,
-        backgroundColor: '#ffffff'
+        backgroundColor: colors.PRIMARY
     },
     text: {
         marginHorizontal: 20,

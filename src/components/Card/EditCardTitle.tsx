@@ -3,6 +3,7 @@ import { StyleSheet, TextInput, View } from "react-native";
 
 import { EditCardTitleProps, Timeout } from "../types";
 import useStore from "../../store";
+import colors from "../../assets/constants/colors";
 
 const EditCardTitle = React.memo((): JSX.Element => {
     const { taskTitle, setTaskTitle } = useStore();
@@ -23,7 +24,7 @@ const EditCardTitle = React.memo((): JSX.Element => {
 
 const styles = StyleSheet.create({
     body: {
-        backgroundColor: "#F3F3F3",
+        backgroundColor: colors.INPUT,
         borderRadius: 10
     },
     title: {

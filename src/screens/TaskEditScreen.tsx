@@ -10,6 +10,7 @@ import { TaskEditScreenProps } from "./types";
 import useStore from "../store";
 import { localStorage } from "../localStorage";
 import storeageKey from "../assets/constants/localStorageKeys";
+import colors from "../assets/constants/colors";
 
 const TaskEditScreen = ({ navigation }: TaskEditScreenProps): JSX.Element => {
     const {
@@ -43,10 +44,8 @@ const TaskEditScreen = ({ navigation }: TaskEditScreenProps): JSX.Element => {
             }
         })
 
-        console.log( JSON.stringify(listCopy))
-
-        // localStorage.set(storeageKey.LIST, JSON.stringify(listCopy));
-        // navigation.goBack();
+        localStorage.set(storeageKey.LIST, JSON.stringify(listCopy));
+        navigation.goBack();
     }
 
     useEffect(()=>{
@@ -66,9 +65,9 @@ const TaskEditScreen = ({ navigation }: TaskEditScreenProps): JSX.Element => {
     return (
         <View style={styles.body}>
             <View style={styles.container}>
-                <EditCardTitle prevTitle={taskTitle}/>
+                <EditCardTitle />
                 <DropDown defaultValue={taskStatus}/>
-                <EditCardDescription prevDescription={taskDescription}/>
+                <EditCardDescription />
                 <View style={styles.buttonContainer}>
                     <CancelButton hadleCancel={handleCancelPress} />
                     <SaveButton handleSave={handleSavePressed} />
@@ -84,11 +83,11 @@ const styles = StyleSheet.create({
         zIndex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#ffffff'
+        backgroundColor: colors.PRIMARY
     },
     container: {
         width: '90%',
-        backgroundColor: "#ffffff",
+        backgroundColor: colors.CARD_BACKGROUND,
         paddingHorizontal: 20,
         paddingVertical: 30,
         borderRadius: 10,

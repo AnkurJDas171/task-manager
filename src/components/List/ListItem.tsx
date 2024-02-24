@@ -5,6 +5,7 @@ import TaskTitle from "../Card/TaskTitle";
 import { ListItemProps } from "../types";
 import screens from "../../assets/constants/screens";
 import useStore from "../../store";
+import colors from "../../assets/constants/colors";
 
 const ListItem = React.memo(({ item, navigation }: ListItemProps): JSX.Element => {
     const { setSelectedCardId, setIsEditPageLoading } = useStore();
@@ -28,8 +29,9 @@ const styles = StyleSheet.create({
     body: {
         height: 50,
         width: '85%',
-        backgroundColor: "#ffffff",
+        backgroundColor: colors.PRIMARY,
         justifyContent: "center",
+        marginVertical: 10,
         alignSelf: "center",
         shadowColor: '#171717',
         shadowOffset: { width: -2, height: 4 },

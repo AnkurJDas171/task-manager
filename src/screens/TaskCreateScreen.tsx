@@ -10,6 +10,7 @@ import { TaskCreateScreenProps } from "./types";
 import useStore from "../store";
 import { localStorage } from "../localStorage";
 import storeageKey from "../assets/constants/localStorageKeys";
+import colors from "../assets/constants/colors";
 
 const TaskCreateScreen = ({navigation}: TaskCreateScreenProps): JSX.Element => {
     const {
@@ -30,9 +31,7 @@ const TaskCreateScreen = ({navigation}: TaskCreateScreenProps): JSX.Element => {
         navigation.goBack();
     }
 
-    const handleSavePressed = () => {
-        console.log("Save Pressed");
-        
+    const handleSavePressed = () => {        
         const id = `${Date.now()}`;
         const listCopy = [...listData]
         listCopy.push({
@@ -67,11 +66,11 @@ const styles = StyleSheet.create({
         zIndex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#ffffff'
+        backgroundColor: colors.PRIMARY
     },
     container: {
         width: '90%',
-        backgroundColor: "#ffffff",
+        backgroundColor: colors.CARD_BACKGROUND,
         paddingHorizontal: 20,
         paddingVertical: 30,
         borderRadius: 10,

@@ -3,6 +3,7 @@ import {StyleSheet, Text, View} from "react-native";
 
 import Button from "./Button";
 import { SaveButtonProps } from "../types";
+import colors from "../../assets/constants/colors";
 
 const SaveButton = ({handleSave}: SaveButtonProps): JSX.Element => {
     return (
@@ -16,7 +17,7 @@ const SaveButton = ({handleSave}: SaveButtonProps): JSX.Element => {
 
 const styles = StyleSheet.create({
     body: {
-        backgroundColor: "blue",
+        backgroundColor: colors.SECONDARY,
         width: 100
     },
     text: {

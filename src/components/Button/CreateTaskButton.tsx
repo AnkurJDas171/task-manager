@@ -4,6 +4,7 @@ import { StyleSheet, View } from "react-native";
 import Button from "./Button";
 import { CreateTaskButtonProps } from "../types";
 import screens from "../../assets/constants/screens";
+import colors from "../../assets/constants/colors";
 
 const CreateTaskButton = React.memo(({navigation}: CreateTaskButtonProps): JSX.Element => {
 
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "blue",
+        backgroundColor: colors.SECONDARY,
         height: 60,
         width: 60,
         borderRadius: 60,
