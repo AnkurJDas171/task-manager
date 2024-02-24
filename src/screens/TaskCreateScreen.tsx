@@ -24,13 +24,25 @@ const TaskCreateScreen = ({ navigation }: TaskCreateScreenProps): JSX.Element =>
         taskStatus,
         setTaskTitle,
         setTaskDescription,
-        setTaskStatus
+        setTaskStatus,
+        setIsErrorInEditTitle,
+        setIsErrorInEditDescription,
+        setIsErrorInStatusDropDown
     } = useStore();
+
+    const handleMissingEntry = () => {
+        if(!taskTitle) setIsErrorInEditTitle(true);
+        if(!taskDescription) setIsErrorInEditDescription(true);
+        if(!taskStatus) setIsErrorInStatusDropDown(true);
+    }
 
     const clearEntries = () =>{
         setTaskTitle("");
         setTaskDescription("");
         setTaskStatus("");
+        setIsErrorInEditTitle(false);
+        setIsErrorInEditDescription(false);
+        setIsErrorInStatusDropDown(false);
     } 
 
     const handleCancelPress = () => {
@@ -38,7 +50,12 @@ const TaskCreateScreen = ({ navigation }: TaskCreateScreenProps): JSX.Element =>
         navigation.goBack();
     }
 
-    const handleSavePressed = () => {
+    const handleSavePressed = (): void => {
+        if(!taskTitle || !taskDescription || !taskStatus) {
+            handleMissingEntry();
+            return;
+        }
+
         const id = `${Date.now()}`;
         const listCopy = [...listData]
         listCopy.push({
@@ -101,6 +118,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 2, height: 5 },
         shadowOpacity: 0.2,
         shadowRadius: 3,
+        elevation: 5
     },
     buttonContainer: {
         marginTop: 20,

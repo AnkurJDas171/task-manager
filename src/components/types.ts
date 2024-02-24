@@ -65,3 +65,7 @@ export type SaveButtonProps = {
 export type CancelButtonProps = {
     hadleCancel: () => void
 }
+
+export type DeleteCardButtonProps = {
+    handlePress: () => void
+}

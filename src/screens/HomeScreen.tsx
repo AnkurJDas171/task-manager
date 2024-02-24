@@ -49,7 +49,8 @@ const styles = StyleSheet.create({
     text: {
         marginHorizontal: 20,
         textAlign: "right",
-        paddingHorizontal: "10%"
+        paddingHorizontal: "10%",
+        color: colors.TEXT
     }
 })
 

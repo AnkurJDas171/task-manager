@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         color: "#ffffff",
         textAlign: 'center',
-        paddingVertical: 10
+        paddingVertical: 10,
     }
 })
 

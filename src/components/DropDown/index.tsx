@@ -4,10 +4,11 @@ import { StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
 import DropDownList from "./DropDownList";
 import { DropDownProps } from "../types";
 import useStore from "../../store";
+import colors from "../../assets/constants/colors";
 
 const DropDown = React.memo(({ defaultValue = "" }: DropDownProps): JSX.Element => {
     const [isDropDownvisible, setIsDropDownVisible] = useState<boolean>(false);
-    const {taskStatus, setTaskStatus} = useStore()
+    const {taskStatus, isErrorInStatusDropDown, setTaskStatus} = useStore()
 
     const handlePress = () => {
         if (isDropDownvisible) return;
@@ -27,8 +28,24 @@ const DropDown = React.memo(({ defaultValue = "" }: DropDownProps): JSX.Element 
 
     return (
         <TouchableWithoutFeedback onPress={handlePress}>
-            <View style={styles.body}>
-                <Text>Status: {taskStatus}</Text>
+            <View 
+                style={[
+                    styles.body,
+                    isErrorInStatusDropDown && {
+                        borderColor: colors.ERROR
+                    }
+                ]}
+            >
+                <Text 
+                    style={[
+                        styles.text,
+                        isErrorInStatusDropDown && {
+                            color: colors.ERROR
+                        }
+                    ]}
+                >
+                    Status: {taskStatus}
+                </Text>
                 {isDropDownvisible && <DropDownList hanldeSelect={handleDropDownValuePress} />}
             </View>
         </TouchableWithoutFeedback>
@@ -43,6 +60,9 @@ const styles = StyleSheet.create({
         borderColor: "#000",
         zIndex: 2,
         marginVertical: 25
+    },
+    text: {
+        color: colors.TEXT
     }
 })
 

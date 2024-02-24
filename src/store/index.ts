@@ -12,6 +12,9 @@ const useStore = create<StateType>()((set) => ({
     taskTitle: "",
     taskDescription: "",
     taskStatus: "",
+    isErrorInEditTitle: false,
+    isErrorInEditDescription: false,
+    isErrorInStatusDropDown: false,
     setListData: (data: cardData[]) => set(() => ({ listData: data })),
     setIsHomePageLoading: (data: boolean) => set(() => ({ isHomePageLoading: data })),
     setIsEditPageLoading: (data: boolean) => set(() => ({ isEditPageLoading: data })),
@@ -20,6 +23,9 @@ const useStore = create<StateType>()((set) => ({
     setTaskTitle: (data: string) => set(() => ({ taskTitle: data })),
     setTaskDescription: (data: string) => set(() => ({ taskDescription: data })),
     setTaskStatus: (data: string) => set(() => ({ taskStatus: data })),
+    setIsErrorInEditTitle: (data: boolean) => set(() => ({ isErrorInEditTitle: data })),
+    setIsErrorInEditDescription: (data: boolean) => set(() => ({ isErrorInEditDescription: data })),
+    setIsErrorInStatusDropDown: (data: boolean) => set(() => ({ isErrorInStatusDropDown: data })),
 }));
 
 export default useStore;

@@ -5,6 +5,7 @@ import ListItem from "./ListItem";
 import { TaskListProps, cardData } from "../types";
 
 import useStore from "../../store";
+import colors from "../../assets/constants/colors";
 
 
 const TaskList = ({ navigation }: TaskListProps): JSX.Element => {
@@ -39,7 +40,8 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontWeight: "500",
         textAlign: "center",
-        marginBottom: 200
+        marginBottom: 200,
+        color: colors.TEXT
     }
 })
 

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Animated, Dimensions, Easing, StyleSheet, View } from "react-native";
+import { Animated, Dimensions, Easing, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import EditCardTitle from "../components/Card/EditCardTitle";
 import DropDown from "../components/DropDown";
@@ -13,6 +13,7 @@ import storeageKey from "../assets/constants/localStorageKeys";
 import colors from "../assets/constants/colors";
 import { cardData } from "../components/types";
 import { useFocusEffect } from "@react-navigation/native";
+import DeleteIcon from "../assets/icons/DeleteIcon";
 
 const { height } = Dimensions.get("window");
 
@@ -74,6 +75,13 @@ const TaskEditScreen = ({ navigation }: TaskEditScreenProps): JSX.Element => {
         }).start(() => saveData(listCopy))
     }
 
+    const handleDeletePress = (): void => {
+        const listDataCopy = [...listData].filter(data => data.id !== selectedCardId);
+        localStorage.set(storeageKey.LIST, JSON.stringify(listDataCopy));
+        clearEntries();
+        navigation.goBack()
+    }
+
     useEffect(() => {
         if (listData.length > 0) {
             const item = listData.find(item => item.id === selectedCardId);
@@ -123,6 +131,12 @@ const TaskEditScreen = ({ navigation }: TaskEditScreenProps): JSX.Element => {
                     { bottom: bottomPosition }
                 ]}
             >
+                <TouchableOpacity 
+                    onPress={handleDeletePress}
+                    style={styles.deleteButtonContainer}
+                >
+                    <DeleteIcon/>
+                </TouchableOpacity>
                 <EditCardTitle />
                 <DropDown defaultValue={taskStatus} />
                 <EditCardDescription />
@@ -153,12 +167,17 @@ const styles = StyleSheet.create({
         shadowOffset: { width: -2, height: 4 },
         shadowOpacity: 0.2,
         shadowRadius: 3,
+        elevation: 5
     },
     buttonContainer: {
         marginTop: 20,
         width: "100%",
         flexDirection: 'row',
         justifyContent: "space-around"
+    },
+    deleteButtonContainer: {
+        alignItems: "flex-end",
+        marginBottom: 10,
     }
 })
 

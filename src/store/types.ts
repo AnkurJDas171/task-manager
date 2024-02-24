@@ -9,6 +9,9 @@ export type StateType = {
     taskTitle: string,
     taskDescription: string,
     taskStatus: string,
+    isErrorInEditTitle: boolean,
+    isErrorInEditDescription: boolean,
+    isErrorInStatusDropDown: boolean,
     setListData: (arg: cardData[]) => void,
     setIsHomePageLoading: (arg: boolean) => void,
     setIsEditPageLoading: (arg: boolean) => void,
@@ -16,5 +19,8 @@ export type StateType = {
     setSelectedCardId: (arg: string) => void,
     setTaskTitle: (arg: string) => void,
     setTaskDescription: (arg: string) => void,
-    setTaskStatus: (arg: string) => void
+    setTaskStatus: (arg: string) => void,
+    setIsErrorInEditTitle: (arg: boolean) => void,
+    setIsErrorInEditDescription: (arg: boolean) => void,
+    setIsErrorInStatusDropDown: (arg: boolean) => void,
 }

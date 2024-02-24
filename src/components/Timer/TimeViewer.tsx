@@ -3,6 +3,7 @@ import { StyleSheet, Text } from "react-native";
 
 import { TimeViewerProps } from "../types";
 import { formateTime } from "../../assets/utils/TimerFunctions";
+import colors from "../../assets/constants/colors";
 
 const TimeViewer = React.memo(({ currentTime }: TimeViewerProps): JSX.Element => {
     if (currentTime === null) return <></>
@@ -18,7 +19,8 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 18,
         fontWeight: "200",
-        textAlign: "center"
+        textAlign: "center",
+        color: colors.TEXT
     }
 })
 

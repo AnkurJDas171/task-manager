@@ -6,17 +6,26 @@ import useStore from "../../store";
 import colors from "../../assets/constants/colors";
 
 const EditCardTitle = React.memo((): JSX.Element => {
-    const { taskTitle, setTaskTitle } = useStore();
+    const { taskTitle, isErrorInEditTitle, setTaskTitle } = useStore();
 
     const handleTextChange = (text: string) =>  setTaskTitle(text);
 
     return (
-        <View style={styles.body}>
+        <View 
+            style={[
+                styles.body,
+                isErrorInEditTitle && {
+                    borderWidth: 1,
+                    borderColor: colors.ERROR
+                }
+            ]}
+        >
             <TextInput
                 placeholder="Title"
                 style={styles.title}
                 onChangeText={handleTextChange}
                 value={taskTitle}
+                placeholderTextColor={colors.TEXT}
             />
         </View>
     )
@@ -31,7 +40,8 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: "400",
         paddingHorizontal: 10,
-        paddingVertical: 15
+        paddingVertical: 15,
+        color: colors.TEXT
     },
 })
 
