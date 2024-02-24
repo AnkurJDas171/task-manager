@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet, View } from "react-native"
+import React, { useEffect, useRef } from "react";
+import { Animated, Dimensions, Easing, StyleSheet, View } from "react-native"
 
 import DropDown from "../components/DropDown";
 import EditCardTitle from "../components/Card/EditCardTitle";
@@ -12,26 +12,33 @@ import { localStorage } from "../localStorage";
 import storeageKey from "../assets/constants/localStorageKeys";
 import colors from "../assets/constants/colors";
 
-const TaskCreateScreen = ({navigation}: TaskCreateScreenProps): JSX.Element => {
+const { height } = Dimensions.get("window");
+
+const TaskCreateScreen = ({ navigation }: TaskCreateScreenProps): JSX.Element => {
+    const positionAnim = useRef(new Animated.Value(0)).current;
+
     const {
-        listData, 
-        taskTitle, 
-        taskDescription, 
-        taskStatus, 
-        setTaskTitle, 
-        setTaskDescription, 
+        listData,
+        taskTitle,
+        taskDescription,
+        taskStatus,
+        setTaskTitle,
+        setTaskDescription,
         setTaskStatus
     } = useStore();
 
-    const handleCancelPress = () => {
+    const clearEntries = () =>{
         setTaskTitle("");
         setTaskDescription("");
         setTaskStatus("");
+    } 
 
+    const handleCancelPress = () => {
+        clearEntries()
         navigation.goBack();
     }
 
-    const handleSavePressed = () => {        
+    const handleSavePressed = () => {
         const id = `${Date.now()}`;
         const listCopy = [...listData]
         listCopy.push({
@@ -42,20 +49,35 @@ const TaskCreateScreen = ({navigation}: TaskCreateScreenProps): JSX.Element => {
         });
 
         localStorage.set(storeageKey.LIST, JSON.stringify(listCopy));
+        clearEntries();
         navigation.goBack();
     }
 
+    useEffect(() => {
+        Animated.timing(positionAnim, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: false,
+            easing: Easing.elastic(1)
+        }).start();
+    }, [positionAnim])
+
+    const bottomPosition = positionAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: [-100, height / 3.5]
+    })
+
     return (
         <View style={styles.body}>
-            <View style={styles.container}>
+            <Animated.View style={[styles.container, {bottom: bottomPosition}]}>
                 <EditCardTitle />
                 <DropDown />
                 <EditCardDescription />
                 <View style={styles.buttonContainer}>
-                    <CancelButton hadleCancel={handleCancelPress}/>
-                    <SaveButton handleSave={handleSavePressed}/>
+                    <CancelButton hadleCancel={handleCancelPress} />
+                    <SaveButton handleSave={handleSavePressed} />
                 </View>
-            </View>
+            </Animated.View>
         </View>
     )
 }
@@ -73,9 +95,10 @@ const styles = StyleSheet.create({
         backgroundColor: colors.CARD_BACKGROUND,
         paddingHorizontal: 20,
         paddingVertical: 30,
+        position: "absolute",
         borderRadius: 10,
         shadowColor: '#171717',
-        shadowOffset: {width: 2, height: 5},
+        shadowOffset: { width: 2, height: 5 },
         shadowOpacity: 0.2,
         shadowRadius: 3,
     },

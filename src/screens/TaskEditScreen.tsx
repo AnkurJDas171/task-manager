@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { Animated, Dimensions, Easing, StyleSheet, View } from "react-native";
 
 import EditCardTitle from "../components/Card/EditCardTitle";
 import DropDown from "../components/DropDown";
@@ -11,8 +11,16 @@ import useStore from "../store";
 import { localStorage } from "../localStorage";
 import storeageKey from "../assets/constants/localStorageKeys";
 import colors from "../assets/constants/colors";
+import { cardData } from "../components/types";
+
+const { height } = Dimensions.get("window");
 
 const TaskEditScreen = ({ navigation }: TaskEditScreenProps): JSX.Element => {
+    const positionAnim = useRef(new Animated.Value(0)).current;
+    const completeCardbackgroundColorAnim = useRef(new Animated.Value(0)).current;
+    const incompleteCardbackgroundColorAnim = useRef(new Animated.Value(0)).current;
+
+
     const {
         selectedCardId,
         listData,
@@ -25,6 +33,11 @@ const TaskEditScreen = ({ navigation }: TaskEditScreenProps): JSX.Element => {
         setTaskStatus,
         setIsEditPageLoading
     } = useStore();
+
+    const saveData = (list: cardData[]) => {
+        localStorage.set(storeageKey.LIST, JSON.stringify(list));
+        navigation.goBack();
+    }
 
     const handleCancelPress = () => {
         setTaskTitle("");
@@ -44,12 +57,20 @@ const TaskEditScreen = ({ navigation }: TaskEditScreenProps): JSX.Element => {
             }
         })
 
-        localStorage.set(storeageKey.LIST, JSON.stringify(listCopy));
-        navigation.goBack();
+        const animationRef = taskStatus === 'Complete' ? 
+            completeCardbackgroundColorAnim : 
+            incompleteCardbackgroundColorAnim
+
+        Animated.timing(animationRef, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: false,
+            easing: Easing.ease
+        }).start(()=>saveData(listCopy))
     }
 
-    useEffect(()=>{
-        if(listData.length > 0){
+    useEffect(() => {
+        if (listData.length > 0) {
             const item = listData.find(item => item.id === selectedCardId);
 
             setTaskTitle(item?.title as string);
@@ -58,21 +79,61 @@ const TaskEditScreen = ({ navigation }: TaskEditScreenProps): JSX.Element => {
 
             setIsEditPageLoading(false);
         }
-    },[])
+    }, [])
 
-    if(isEditPageLoading) return <></>
+    useEffect(() => {
+        if (!isEditPageLoading) {
+            Animated.timing(positionAnim, {
+                toValue: 1,
+                duration: 500,
+                useNativeDriver: false,
+                easing: Easing.elastic(1)
+            }).start();
+        }
+    }, [positionAnim, isEditPageLoading])
+
+    const bottomPosition = positionAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: [-100, height / 3.5]
+    })
+
+    const completeCardColor = completeCardbackgroundColorAnim.interpolate({
+        inputRange: [0,1],
+        outputRange: [
+            colors.STATUS_COMPLETE_CARD_BACKGROUND,
+            colors.CARD_BACKGROUND, 
+        ]
+    })
+
+    const incompleteCardColor = incompleteCardbackgroundColorAnim.interpolate({
+        inputRange: [0,1],
+        outputRange: [
+            colors.STATUS_COMPLETE_CARD_BACKGROUND,
+            colors.CARD_BACKGROUND, 
+        ]
+    })
+
+    if (isEditPageLoading) return <></>
 
     return (
         <View style={styles.body}>
-            <View style={styles.container}>
+            <Animated.View 
+                style={[
+                    styles.container, 
+                    completeCardbackgroundColorAnim === new Animated.Value(1) ?
+                        {backgroundColor: completeCardColor} :
+                        {backgroundColor: incompleteCardColor},
+                    { bottom: bottomPosition }
+                ]}
+            >
                 <EditCardTitle />
-                <DropDown defaultValue={taskStatus}/>
+                <DropDown defaultValue={taskStatus} />
                 <EditCardDescription />
                 <View style={styles.buttonContainer}>
                     <CancelButton hadleCancel={handleCancelPress} />
                     <SaveButton handleSave={handleSavePressed} />
                 </View>
-            </View>
+            </Animated.View>
         </View>
     )
 }
@@ -87,7 +148,7 @@ const styles = StyleSheet.create({
     },
     container: {
         width: '90%',
-        backgroundColor: colors.CARD_BACKGROUND,
+        position: "absolute",
         paddingHorizontal: 20,
         paddingVertical: 30,
         borderRadius: 10,
