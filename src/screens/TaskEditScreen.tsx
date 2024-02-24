@@ -14,6 +14,7 @@ import colors from "../assets/constants/colors";
 import { cardData } from "../components/types";
 import { useFocusEffect } from "@react-navigation/native";
 import DeleteIcon from "../assets/icons/DeleteIcon";
+import useKeyboardVisible from "../components/hooks/useKeyboardVisible";
 
 const { height } = Dimensions.get("window");
 
@@ -21,6 +22,7 @@ const TaskEditScreen = ({ navigation }: TaskEditScreenProps): JSX.Element => {
     const positionAnim = useRef(new Animated.Value(0)).current;
     const colorAnimation = useRef(new Animated.Value(0)).current;
     const [currentTaskState, setCurrentTaskState] = useState<string>("");
+    const [isKeyboardVisible, setIsKeyboardVisible] = useState<boolean>(false);
 
     const {
         selectedCardId,
@@ -107,6 +109,8 @@ const TaskEditScreen = ({ navigation }: TaskEditScreenProps): JSX.Element => {
         }
     }, [positionAnim, isEditPageLoading])
 
+    useKeyboardVisible(setIsKeyboardVisible);
+
     const bottomPosition = positionAnim.interpolate({
         inputRange: [0, 1],
         outputRange: [-100, height / 3.5]
@@ -128,7 +132,8 @@ const TaskEditScreen = ({ navigation }: TaskEditScreenProps): JSX.Element => {
                 style={[
                     styles.container,
                     { backgroundColor: cardColor },
-                    { bottom: bottomPosition }
+                    { bottom: bottomPosition },
+                    isKeyboardVisible && { bottom: 0 }
                 ]}
             >
                 <TouchableOpacity 

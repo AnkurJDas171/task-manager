@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Animated, Dimensions, Easing, StyleSheet, View } from "react-native"
 
 import DropDown from "../components/DropDown";
@@ -11,12 +11,13 @@ import useStore from "../store";
 import { localStorage } from "../localStorage";
 import storeageKey from "../assets/constants/localStorageKeys";
 import colors from "../assets/constants/colors";
+import useKeyboardVisible from "../components/hooks/useKeyboardVisible";
 
 const { height } = Dimensions.get("window");
 
 const TaskCreateScreen = ({ navigation }: TaskCreateScreenProps): JSX.Element => {
     const positionAnim = useRef(new Animated.Value(0)).current;
-
+    const [isKeyboardVisible, setIsKeyboardVisible] = useState<boolean>(false);
     const {
         listData,
         taskTitle,
@@ -79,6 +80,8 @@ const TaskCreateScreen = ({ navigation }: TaskCreateScreenProps): JSX.Element =>
         }).start();
     }, [positionAnim])
 
+    useKeyboardVisible(setIsKeyboardVisible);
+
     const bottomPosition = positionAnim.interpolate({
         inputRange: [0, 1],
         outputRange: [-100, height / 3.5]
@@ -86,7 +89,13 @@ const TaskCreateScreen = ({ navigation }: TaskCreateScreenProps): JSX.Element =>
 
     return (
         <View style={styles.body}>
-            <Animated.View style={[styles.container, {bottom: bottomPosition}]}>
+            <Animated.View 
+                style={[
+                    styles.container, 
+                    {bottom: bottomPosition},
+                    isKeyboardVisible && { bottom: 0 }
+                ]}
+            >
                 <EditCardTitle />
                 <DropDown />
                 <EditCardDescription />
