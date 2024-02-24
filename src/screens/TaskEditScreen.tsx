@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Animated, Dimensions, Easing, StyleSheet, View } from "react-native";
 
 import EditCardTitle from "../components/Card/EditCardTitle";
@@ -12,14 +12,14 @@ import { localStorage } from "../localStorage";
 import storeageKey from "../assets/constants/localStorageKeys";
 import colors from "../assets/constants/colors";
 import { cardData } from "../components/types";
+import { useFocusEffect } from "@react-navigation/native";
 
 const { height } = Dimensions.get("window");
 
 const TaskEditScreen = ({ navigation }: TaskEditScreenProps): JSX.Element => {
     const positionAnim = useRef(new Animated.Value(0)).current;
-    const completeCardbackgroundColorAnim = useRef(new Animated.Value(0)).current;
-    const incompleteCardbackgroundColorAnim = useRef(new Animated.Value(0)).current;
-
+    const colorAnimation = useRef(new Animated.Value(0)).current;
+    const [currentTaskState, setCurrentTaskState] = useState<string>("");
 
     const {
         selectedCardId,
@@ -34,20 +34,24 @@ const TaskEditScreen = ({ navigation }: TaskEditScreenProps): JSX.Element => {
         setIsEditPageLoading
     } = useStore();
 
-    const saveData = (list: cardData[]) => {
-        localStorage.set(storeageKey.LIST, JSON.stringify(list));
-        navigation.goBack();
-    }
-
-    const handleCancelPress = () => {
+    const clearEntries = (): void =>{
         setTaskTitle("");
         setTaskDescription("");
         setTaskStatus("");
+    }
 
+    const saveData = (list: cardData[]): void => {
+        localStorage.set(storeageKey.LIST, JSON.stringify(list));
+        clearEntries()
         navigation.goBack();
     }
 
-    const handleSavePressed = () => {
+    const handleCancelPress = (): void => {
+        clearEntries()
+        navigation.goBack();
+    }
+
+    const handleSavePressed = (): void => {
         const listCopy = [...listData]
         listCopy.forEach(item => {
             if (item.id === selectedCardId) {
@@ -57,16 +61,17 @@ const TaskEditScreen = ({ navigation }: TaskEditScreenProps): JSX.Element => {
             }
         })
 
-        const animationRef = taskStatus === 'Complete' ? 
-            completeCardbackgroundColorAnim : 
-            incompleteCardbackgroundColorAnim
+        if(taskStatus === currentTaskState){
+            saveData(listCopy);
+            return;
+        }
 
-        Animated.timing(animationRef, {
+        Animated.timing(colorAnimation, {
             toValue: 1,
             duration: 1000,
             useNativeDriver: false,
             easing: Easing.ease
-        }).start(()=>saveData(listCopy))
+        }).start(() => saveData(listCopy))
     }
 
     useEffect(() => {
@@ -83,6 +88,8 @@ const TaskEditScreen = ({ navigation }: TaskEditScreenProps): JSX.Element => {
 
     useEffect(() => {
         if (!isEditPageLoading) {
+            setCurrentTaskState(taskStatus);
+
             Animated.timing(positionAnim, {
                 toValue: 1,
                 duration: 500,
@@ -97,19 +104,11 @@ const TaskEditScreen = ({ navigation }: TaskEditScreenProps): JSX.Element => {
         outputRange: [-100, height / 3.5]
     })
 
-    const completeCardColor = completeCardbackgroundColorAnim.interpolate({
-        inputRange: [0,1],
+    const cardColor = colorAnimation.interpolate({
+        inputRange: [0, 1],
         outputRange: [
-            colors.STATUS_COMPLETE_CARD_BACKGROUND,
-            colors.CARD_BACKGROUND, 
-        ]
-    })
-
-    const incompleteCardColor = incompleteCardbackgroundColorAnim.interpolate({
-        inputRange: [0,1],
-        outputRange: [
-            colors.STATUS_COMPLETE_CARD_BACKGROUND,
-            colors.CARD_BACKGROUND, 
+            currentTaskState === "Complete" ? colors.STATUS_COMPLETE_CARD_BACKGROUND : colors.CARD_BACKGROUND,
+            currentTaskState === "Complete" ? colors.CARD_BACKGROUND : colors.STATUS_COMPLETE_CARD_BACKGROUND
         ]
     })
 
@@ -117,12 +116,10 @@ const TaskEditScreen = ({ navigation }: TaskEditScreenProps): JSX.Element => {
 
     return (
         <View style={styles.body}>
-            <Animated.View 
+            <Animated.View
                 style={[
-                    styles.container, 
-                    completeCardbackgroundColorAnim === new Animated.Value(1) ?
-                        {backgroundColor: completeCardColor} :
-                        {backgroundColor: incompleteCardColor},
+                    styles.container,
+                    { backgroundColor: cardColor },
                     { bottom: bottomPosition }
                 ]}
             >
